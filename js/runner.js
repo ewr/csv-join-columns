@@ -107,18 +107,20 @@ aH = _.after(files.length, function() {
 });
 
 fn = function(f) {
-  var csv;
+  var csv, obj;
   debug("Opening " + f);
   csv = CSV.parse();
+  obj = {
+    headers: null,
+    file: f,
+    csv: csv
+  };
+  readers.push(obj);
   csv.once("readable", function() {
     var fheaders;
     fheaders = csv.read();
     debug("Headers for " + f + " are " + fheaders);
-    readers.push({
-      headers: fheaders,
-      file: f,
-      csv: csv
-    });
+    obj.headers = fheaders;
     return aH();
   });
   return fs.createReadStream(f).pipe(csv);

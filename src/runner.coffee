@@ -99,12 +99,16 @@ for f in files
     do (f) ->
         debug "Opening #{f}"
         csv = CSV.parse()
+
+        obj = headers:null, file:f, csv:csv
+        readers.push obj
+
         csv.once "readable", ->
             # consume one line...
             fheaders = csv.read()
             debug "Headers for #{f} are #{fheaders}"
 
-            readers.push headers:fheaders, file:f, csv:csv
+            obj.headers = fheaders
             aH()
 
         fs.createReadStream(f).pipe(csv)
